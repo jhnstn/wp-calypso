@@ -65,7 +65,7 @@ export const rebootNormally = () => {
 
 	debug( 'Rebooting Calypso normally' );
 
-	store.clear();
+	store.remove( STORAGE_KEY );
 	window.location.reload();
 };
 
@@ -101,6 +101,55 @@ export const boot = () => {
 
 	const { user, token } = store.get( STORAGE_KEY );
 	debug( 'Booting Calypso with support user', user );
+	store.remove( STORAGE_KEY );
+
+	if ( window && window.localStorage && window.Storage && window.Storage.prototype ) {
+		let memoryStore = {};
+
+		const setItem = Storage.prototype.setItem.bind( window.localStorage );
+		const getItem = Storage.prototype.getItem.bind( window.localStorage );
+		const removeItem = Storage.prototype.removeItem.bind( window.localStorage );
+
+		debug( 'Bypassing localStorage' );
+
+		// The following keys will not be bypassed as
+		// they are safe to share across user sessions.
+		const allowedKeys = [ STORAGE_KEY, 'debug' ];
+
+		Storage.prototype.setItem = ( key, value ) => {
+			if ( allowedKeys.indexOf( key ) > -1 ) {
+				setItem( key, value );
+				return;
+			}
+
+			debug( 'Bypassing localStorage', 'setItem', key );
+			memoryStore[ key ] = value;
+		};
+
+		Storage.prototype.getItem = ( key ) => {
+			if ( allowedKeys.indexOf( key ) > -1 ) {
+				return getItem( key );
+			}
+
+			debug( 'Bypassing localStorage', 'getItem', key );
+			return memoryStore[ key ] || null;
+		};
+
+		Storage.prototype.removeItem = ( key ) => {
+			if ( allowedKeys.indexOf( key ) > -1 ) {
+				removeItem( key );
+				return;
+			}
+
+			debug( 'Bypassing localStorage', 'removeItem', key );
+			delete memoryStore[ key ];
+		};
+
+		Storage.prototype.clear = () => {
+			debug( 'Bypassing localStorage', 'clear' );
+			memoryStore = {};
+		};
+	}
 
 	const errorHandler = ( error ) => onTokenError( error );
 
