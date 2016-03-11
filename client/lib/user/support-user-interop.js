@@ -116,6 +116,18 @@ export const boot = () => {
 		// they are safe to share across user sessions.
 		const allowedKeys = [ STORAGE_KEY, 'debug' ];
 
+		Object.defineProperty( Storage.prototype, 'length', {
+			get: () => {
+				debug( 'Bypassing localStorage', 'length property' );
+				return Object.keys( memoryStore ).length;
+			},
+		} );
+
+		Storage.prototype.key = ( index ) => {
+			debug( 'Bypassing localStorage', 'key' );
+			return Object.keys( memoryStore )[ index ];
+		}
+
 		Storage.prototype.setItem = ( key, value ) => {
 			if ( allowedKeys.indexOf( key ) > -1 ) {
 				setItem( key, value );
