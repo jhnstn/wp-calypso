@@ -46,7 +46,7 @@ module.exports = function() {
 
 		// Feed full post
 		page( '/read/post/feed/:feed_id/:post_id', controller.legacyRedirects );
-		page( '/read/feeds/:feed/posts/:post', updateLastRoute, controller.feedPost );
+		page( '/read/feeds/:feed/posts/:post', updateLastRoute, controller.sidebar, controller.feedPost );
 		page.exit( '/read/feeds/:feed/posts/:post', controller.resetTitle );
 
 		// Blog stream

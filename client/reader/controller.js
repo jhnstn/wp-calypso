@@ -26,7 +26,8 @@ const abtest = require( 'lib/abtest' ).abtest,
 	hideReaderFullPost = require( 'state/ui/reader/fullpost/actions' ).hideReaderFullPost,
 	FeedSubscriptionActions = require( 'lib/reader-feed-subscriptions/actions' ),
 	readerRoute = require( 'reader/route' ),
-	stats = require( 'reader/stats' );
+	stats = require( 'reader/stats' ),
+	FeedError = require( 'reader/feed-error' );
 
 import userSettings from 'lib/user-settings';
 
@@ -68,10 +69,6 @@ function trackScrollPage( path, title, category, readerView, pageNum ) {
 
 // Listen for route changes and remove the full post dialog when we navigate away from it
 pageNotifier( function removeFullPostOnLeave( newContext, oldContext ) {
-	if ( ! oldContext ) {
-		return;
-	}
-
 	const fullPostViewRegex = /^\/read\/(blogs|feeds)\/([0-9]+)\/posts\/([0-9]+)$/i;
 
 	if ( ( ! oldContext || oldContext.path.match( fullPostViewRegex ) ) && ! newContext.path.match( fullPostViewRegex ) ) {
@@ -81,6 +78,13 @@ pageNotifier( function removeFullPostOnLeave( newContext, oldContext ) {
 
 function removeFullPostDialog() {
 	ReactDom.unmountComponentAtNode( document.getElementById( 'tertiary' ) );
+}
+
+function renderPostNotFound() {
+	ReactDom.render(
+		<FeedError />,
+		document.getElementById( 'primary' )
+	);
 }
 
 function userHasHistory( context ) {
@@ -310,7 +314,8 @@ module.exports = {
 					onClose: function() {
 						page.back( context.lastRoute || '/' );
 					},
-					onClosed: removeFullPostDialog
+					onClosed: removeFullPostDialog,
+					onPostNotFound: renderPostNotFound
 				} )
 			),
 			document.getElementById( 'tertiary' )
