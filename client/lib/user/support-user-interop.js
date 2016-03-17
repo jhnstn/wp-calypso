@@ -11,6 +11,7 @@ import wpcom from 'lib/wp';
 import config from 'config';
 import store from 'store';
 import { supportUserTokenFetch, supportUserActivate, supportUserError } from 'state/support/actions';
+import localStorageBypass from 'lib/support/support-user/localstorage-bypass';
 
 /**
  * Connects the Redux store and the low-level support user functions
@@ -103,65 +104,10 @@ export const boot = () => {
 	debug( 'Booting Calypso with support user', user );
 	store.remove( STORAGE_KEY );
 
-	if ( window && window.localStorage && window.Storage && window.Storage.prototype ) {
-		let memoryStore = {};
-
-		const setItem = Storage.prototype.setItem.bind( window.localStorage );
-		const getItem = Storage.prototype.getItem.bind( window.localStorage );
-		const removeItem = Storage.prototype.removeItem.bind( window.localStorage );
-
-		debug( 'Bypassing localStorage' );
-
-		// The following keys will not be bypassed as
-		// they are safe to share across user sessions.
-		const allowedKeys = [ STORAGE_KEY, 'debug' ];
-
-		Object.defineProperty( Storage.prototype, 'length', {
-			get: () => {
-				debug( 'Bypassing localStorage', 'length property' );
-				return Object.keys( memoryStore ).length;
-			},
-		} );
-
-		Storage.prototype.key = ( index ) => {
-			debug( 'Bypassing localStorage', 'key' );
-			return Object.keys( memoryStore )[ index ];
-		}
-
-		Storage.prototype.setItem = ( key, value ) => {
-			if ( allowedKeys.indexOf( key ) > -1 ) {
-				setItem( key, value );
-				return;
-			}
-
-			debug( 'Bypassing localStorage', 'setItem', key );
-			memoryStore[ key ] = value;
-		};
-
-		Storage.prototype.getItem = ( key ) => {
-			if ( allowedKeys.indexOf( key ) > -1 ) {
-				return getItem( key );
-			}
-
-			debug( 'Bypassing localStorage', 'getItem', key );
-			return memoryStore[ key ] || null;
-		};
-
-		Storage.prototype.removeItem = ( key ) => {
-			if ( allowedKeys.indexOf( key ) > -1 ) {
-				removeItem( key );
-				return;
-			}
-
-			debug( 'Bypassing localStorage', 'removeItem', key );
-			delete memoryStore[ key ];
-		};
-
-		Storage.prototype.clear = () => {
-			debug( 'Bypassing localStorage', 'clear' );
-			memoryStore = {};
-		};
-	}
+	// The following keys will not be bypassed as
+	// they are safe to share across user sessions.
+	const allowedKeys = [ STORAGE_KEY, 'debug' ];
+	localStorageBypass( allowedKeys );
 
 	const errorHandler = ( error ) => onTokenError( error );
 
