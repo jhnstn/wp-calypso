@@ -1,6 +1,8 @@
 function ChunkFileNames() {
 }
 
+const CALYPSO_ENV = process.env.CALYPSO_ENV || 'development'
+
 ChunkFileNames.prototype.apply = function( compiler ) {
 	compiler.plugin("compilation", function( compilation ) {
 		compilation.mainTemplate.plugin("require-ensure", function( _, chunk ) {
@@ -30,7 +32,7 @@ ChunkFileNames.prototype.apply = function( compiler ) {
 						"callback.call( null, " + this.requireFn + ", new Error() )"
 					] ),
 					"};",
-					"script.src = " + this.requireFn + ".p + (" + JSON.stringify( chunkMaps.name ) + "[chunkId]||chunkId) + '.' + (" + JSON.stringify( chunkMaps.hash ) + "[chunkId]||chunkID) + ( isDebug ? '' : '.min' ) + '.js';",
+					"script.src = " + this.requireFn + ".p + (" + JSON.stringify( chunkMaps.name ) + "[chunkId]||chunkId) " + (  CALYPSO_ENV !== 'development' ? ( "+ '.' + (" + JSON.stringify( chunkMaps.hash ) + "[chunkId]||chunkID)" ) : '' ) + " + ( isDebug ? '' : '.min' ) + '.js';",
 					"head.appendChild( script );"
 				] ),
 				"}"
@@ -41,4 +43,3 @@ ChunkFileNames.prototype.apply = function( compiler ) {
 };
 
 module.exports = ChunkFileNames;
-
