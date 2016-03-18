@@ -11,6 +11,7 @@ var noop = require( 'lodash/noop' ),
  */
 var Gridicon = require( 'components/gridicon' ),
 	postUtils = require( 'lib/posts/utils' );
+import EditorStatusLabelPlaceholder from './placeholder';
 
 var StatusLabel = React.createClass( {
 	propTypes: {
@@ -54,20 +55,12 @@ var StatusLabel = React.createClass( {
 	},
 
 	render: function() {
-		var statusClass = 'editor-status-label';
+		let statusClass = classNames( 'editor-status-label', {
+			'is-placeholder': ! this.props.post
+		} );
 
 		if ( ! this.props.post ) {
-			return (
-				<button className="editor-status-label is-placeholder">
-					<strong>
-						{
-							'post' === this.props.type
-								? this.translate( 'Loading Post…' )
-								: this.translate( 'Loading Page…' )
-						}
-					</strong>
-				</button>
-			);
+			return <EditorStatusLabelPlaceholder className={ statusClass } />;
 		}
 
 		statusClass = classNames( statusClass, 'is-' + this.props.post.status );
