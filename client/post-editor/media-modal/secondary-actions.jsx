@@ -8,6 +8,7 @@ import values from 'lodash/values';
 import noop from 'lodash/noop';
 import some from 'lodash/some';
 import every from 'lodash/every';
+import page from 'page';
 
 /**
  * Internal dependencies
@@ -19,6 +20,7 @@ import PopoverMenuItem from 'components/popover/menu-item';
 import Gridicon from 'components/gridicon';
 import { canUserDeleteItem } from 'lib/media/utils';
 import { getCurrentUser } from 'state/current-user/selectors';
+import PlanStorage from 'components/plan-storage';
 
 const MediaModalSecondaryActions = React.createClass( {
 	propTypes: {
@@ -60,6 +62,11 @@ const MediaModalSecondaryActions = React.createClass( {
 		analytics.ga.recordEvent( 'Media', 'Clicked Dialog Edit Button' );
 
 		this.props.onChangeView( ModalViews.DETAIL );
+	},
+
+	navigateToPlans() {
+		analytics.ga.recordEvent( 'Media', 'Clicked Plan Storage Button' );
+		page( `/plans/${ this.props.site.slug }` );
 	},
 
 	getButtons() {
@@ -167,6 +174,11 @@ const MediaModalSecondaryActions = React.createClass( {
 			<div className="editor-media-modal__secondary-actions">
 				{ this.renderMobileButtons() }
 				{ this.renderDesktopButtons() }
+				{ this.props.selectedItems.length === 0 &&
+					<PlanStorage
+						onClick={ this.navigateToPlans }
+						site={ this.props.site }/>
+				}
 			</div>
 		);
 	}

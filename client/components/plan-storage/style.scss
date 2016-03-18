@@ -1,0 +1,27 @@
+.plan-storage__plan-label {
+	font-size: 12px;
+	font-weight: normal;
+}
+
+.plan-storage__storage-label {
+	font-size: 11px;
+	color: $gray;
+	margin-left: 20px;
+}
+
+.plan-storage__button .plan-storage__bar {
+	display: block;
+	height: 4px;
+}
+
+.plan-storage__bar .progress-bar__progress {
+		background-color: $alert-green;
+}
+
+.plan-storage__button.is-warn .progress-bar__progress {
+	background-color: $alert-yellow;
+}
+
+.plan-storage__button.is-alert .progress-bar__progress {
+	background-color: $alert-red;
+}
