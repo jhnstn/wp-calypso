@@ -24,11 +24,10 @@ export default React.createClass( {
 			return (
 				<div className="editor-contact-form-modal-fields">
 					{ this.props.fields.map( ( field, index ) => {
-						const { label, type, options, required } = field;
 						return (
 							<Field
 								key={ index }
-								{ ...{ label, type, options, required } }
+								{ ...field }
 								onRemove={ () => this.props.onFieldRemove( index ) }
 								onUpdate={ newField => this.props.onFieldUpdate( index, newField ) } />
 						);
