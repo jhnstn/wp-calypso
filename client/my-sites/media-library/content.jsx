@@ -10,6 +10,7 @@ import mapValues from 'lodash/mapValues';
 import groupBy from 'lodash/groupBy';
 import debounce from 'lodash/debounce';
 import debugFactory from 'debug';
+import { connect } from 'react-redux';
 
 /**
  * Internal dependencies
@@ -23,13 +24,14 @@ import PreferencesActions from 'lib/preferences/actions';
 import { isMobile } from 'lib/viewport';
 import MediaLibraryHeader from './header';
 import MediaLibraryList from './list';
+import { isOverMediaLimit } from 'state/sites/media-storage/selectors';
 
 /**
  * Module variables
  */
 const debug = debugFactory( 'calypso:media-library:content' );
 
-export default React.createClass( {
+const MediaLibraryContent = React.createClass( {
 	displayName: 'MediaLibraryContent',
 
 	propTypes: {
@@ -45,7 +47,8 @@ export default React.createClass( {
 		initialMediaScale: React.PropTypes.number,
 		onAddMedia: React.PropTypes.func,
 		onMediaScaleChange: React.PropTypes.func,
-		onEditItem: React.PropTypes.func
+		onEditItem: React.PropTypes.func,
+		overMediaLimit: React.PropTypes.bool
 	},
 
 	getInitialState: function() {
@@ -141,11 +144,19 @@ export default React.createClass( {
 					);
 					break;
 				default:
-					message = this.translate(
-						'The file could not be uploaded because an error occurred while uploading.',
-						'%d files could not be uploaded because errors occurred while uploading.',
-						i18nOptions
-					);
+					if ( this.props.overMediaLimit ) {
+						message = this.translate(
+							'The file could not be uploaded because you have reached your plan storage limit.',
+							'%d files could not be uploaded because you have reached your plan storage limit.',
+							i18nOptions
+						);
+					} else {
+						message = this.translate(
+							'The file could not be uploaded because an error occurred while uploading.',
+							'%d files could not be uploaded because errors occurred while uploading.',
+							i18nOptions
+						);
+					}
 					break;
 			}
 
@@ -203,3 +214,14 @@ export default React.createClass( {
 		);
 	}
 } );
+
+export default connect(
+	( state, ownProps ) => {
+		return {
+			overMediaLimit: ownProps.site ? isOverMediaLimit( state, ownProps.site.ID ) : false
+		}
+	},
+	null,
+	null,
+	{ pure: false }
+)( MediaLibraryContent );

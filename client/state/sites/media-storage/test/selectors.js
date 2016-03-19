@@ -9,7 +9,8 @@ import deepFreeze from 'deep-freeze';
  */
 import {
 	getMediaStorage,
-	isRequestingMediaStorage
+	isRequestingMediaStorage,
+	isOverMediaLimit
 } from '../selectors';
 
 describe( 'selectors', () => {
@@ -55,6 +56,46 @@ describe( 'selectors', () => {
 			expect( isRequestingMediaStorage( state, 2916284 ) ).to.eql( true );
 			expect( isRequestingMediaStorage( state, 77203074 ) ).to.eql( false );
 			expect( isRequestingMediaStorage( state, 'not-defined' ) ).to.eql( false );
+		} );
+	} );
+	describe( '#isOverMediaLimit()', () => {
+		it( 'should return true if a site is over storage limits', () => {
+			const state = deepFreeze( {
+				sites: {
+					mediaStorage: {
+						items: {
+							2916284: {
+								max_storage_bytes: 3221225472,
+								storage_used_bytes: 3221225900
+							},
+							77203074: {
+								max_storage_bytes: 3221225472,
+								storage_used_bytes: 323506
+							}
+						}
+					}
+				}
+			} );
+
+			expect( isOverMediaLimit( state, 2916284 ) ).to.eql( true );
+			expect( isOverMediaLimit( state, 77203074 ) ).to.eql( false );
+		} );
+		it( 'should return false if a site is unlimited or missing', () => {
+			const state = deepFreeze( {
+				sites: {
+					mediaStorage: {
+						items: {
+							2916284: {
+								max_storage_bytes: -1,
+								storage_used_bytes: -1
+							}
+						}
+					}
+				}
+			} );
+
+			expect( isOverMediaLimit( state, 2916284 ) ).to.eql( false );
+			expect( isOverMediaLimit( state, 77203074 ) ).to.eql( false );
 		} );
 	} );
 } );
