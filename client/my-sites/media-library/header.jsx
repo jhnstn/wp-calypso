@@ -2,6 +2,7 @@
  * External dependencies
  */
 import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
 import _debug from 'debug';
 const debug = _debug( 'calypso:media-library:header' );
 
@@ -18,8 +19,9 @@ import SegmentedControlItem from 'components/segmented-control/item';
 import UploadButton from './upload-button';
 import MediaLibraryUploadUrl from './upload-url';
 import { userCan } from 'lib/site/utils';
+import { isOverMediaLimit } from 'state/sites/media-storage/selectors';
 
-export default React.createClass( {
+const MediaLibraryHeader = React.createClass( {
 	displayName: 'MediaLibraryHeader',
 
 	propTypes: {
@@ -30,7 +32,8 @@ export default React.createClass( {
 		mediaScaleChoices: PropTypes.arrayOf( PropTypes.number ).isRequired,
 		mediaScale: PropTypes.number.isRequired,
 		sliderPositionCount: PropTypes.number,
-		onAddMedia: PropTypes.func
+		onAddMedia: PropTypes.func,
+		overMediaLimit: PropTypes.bool
 	},
 
 	statics: {
@@ -122,7 +125,7 @@ export default React.createClass( {
 	renderUploadButtons() {
 		const { site, filter, onAddMedia } = this.props;
 
-		if ( ! userCan( 'upload_files', site ) ) {
+		if ( ! userCan( 'upload_files', site ) || this.props.overMediaLimit ) {
 			return;
 		}
 
@@ -224,3 +227,12 @@ export default React.createClass( {
 		);
 	}
 } );
+
+export default connect(
+	( state, ownProps ) => {
+		return {
+			overMediaLimit: ownProps.site ? isOverMediaLimit( state, ownProps.site.ID ) : false
+		}
+	}
+)( MediaLibraryHeader );
+
