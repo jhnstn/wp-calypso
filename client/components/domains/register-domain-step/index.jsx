@@ -384,14 +384,17 @@ var RegisterDomainStep = React.createClass( {
 	},
 
 	goToMapDomainStep: function( event ) {
+		const query = this.state.lastQuery.trim();
+		let mapDomainPath = `${this.props.basePath}/mapping`;
+		if ( this.props.selectedSite ) {
+			if ( query ) {
+				mapDomainPath += `/${ query }`;
+			}
+			mapDomainPath += `/${ this.props.selectedSite.slug }`;
+		}
+
 		event.preventDefault();
-
 		this.recordEvent( 'mapDomainButtonClick', this.props.analyticsSection );
-
-		let mapDomainPath = this.props.selectedSite ?
-			this.props.basePath + '/mapping/' + this.props.selectedSite.slug :
-			this.props.basePath + '/mapping';
-
 		page( mapDomainPath );
 	},
 

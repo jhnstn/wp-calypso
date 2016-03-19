@@ -193,7 +193,7 @@ module.exports = function() {
 			upgradesController.googleAppsWithRegistration
 		);
 
-		page( '/domains/add/mapping/:domain',
+		page( '/domains/add/mapping/:initial_query?/:domain',
 			adTracking.retarget,
 			controller.siteSelection,
 			controller.navigation,
