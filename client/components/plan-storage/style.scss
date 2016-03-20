@@ -25,3 +25,9 @@
 .plan-storage__button.is-alert .progress-bar__progress {
 	background-color: $alert-red;
 }
+
+@include breakpoint( "<480px" ) {
+	.plan-storage__button {
+		display: none;
+	}
+}
