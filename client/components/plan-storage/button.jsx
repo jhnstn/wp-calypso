@@ -49,7 +49,7 @@ export default React.createClass( {
 		const percent = Math.round( this.props.mediaStorage.storage_used_bytes / this.props.mediaStorage.max_storage_bytes * 1000 ) / 10;
 		const classes = classNames( this.props.className, 'plan-storage__button', {
 			'is-alert': percent > ALERT_PERCENT,
-			'is-warn': percent > WARN_PERCENT && percent < ALERT_PERCENT
+			'is-warn': percent > WARN_PERCENT && percent <= ALERT_PERCENT
 		} );
 		const percentString = `${ percent }%`;
 		const max = filesize( this.props.mediaStorage.max_storage_bytes );

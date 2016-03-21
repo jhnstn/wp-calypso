@@ -55,7 +55,7 @@ export default React.createClass( {
 				<div>
 					<PlanStorageButton
 						sitePlanName={ plans.free }
-                        mediaStorage={ mediaStorage.yellow }
+						mediaStorage={ mediaStorage.yellow }
 					/>
 				</div>
 				<div>

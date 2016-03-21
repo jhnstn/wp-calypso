@@ -16,6 +16,7 @@ import PlanStorageButton from 'components/plan-storage/button';
 const PlanStorage = React.createClass( {
 
 	propTypes: {
+		className: React.PropTypes.string,
 		mediaStorage: React.PropTypes.object,
 		site: React.PropTypes.object.isRequired,
 		onClick: React.PropTypes.func

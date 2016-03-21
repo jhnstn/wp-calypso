@@ -7,15 +7,10 @@ will query media storage limits for you.
 #### Usage:
 
 ```javascript
-import PlanStorage from 'components/plan-storage';
-
-render: function() {
-	return (
-		<PlanStorage
-			site={ this.props.site }
-			onClick={ this.onClickHandler } 
-		/>;
-	);
+	<PlanStorage
+		site={ this.props.site }
+		onClick={ this.onClickHandler } 
+	/>
 }
 ```
 
@@ -23,9 +18,10 @@ render: function() {
 
 * `site`: A site (required)
 * `onClick`: An on click handler that is fired when the plan button is clicked.
+* `className`: A string that adds additional class names to this component.
 
 
-You can also use PlanStorageButton directly, if you need more control over when
+You can also use PlanStorageButton directly if you need more control over when
 media storage limits are fetched.
 
 #### Usage:
@@ -35,22 +31,23 @@ import PlanStorageButton from 'components/plan-storage/button';
 import QueryMediaStorage from 'components/data/query-media-storage';
 import { getMediaStorage } from 'state/sites/media-storage/selectors';
 
-render: function() {
+render() {
 	const planName = this.props.site.plan.product_name_short;
 	return (
 		<div>
-			<QueryMediaStorage siteId={ this.props.site.ID } />
+			<QueryMediaStorage siteId={ this.props.siteId } />
 			<PlanStorageButton
 				sitePlanName={ planName }
 				mediaStorage={ this.props.mediaStorage }
 				onClick={ this.onClickHandler }
 			/>
+		</div>
 	);
 }
 //...
 export default connect( ( state, ownProps ) => {
 	return {
-		mediaStorage: getMediaStorage( state, ownProps.site.ID )
+		mediaStorage: getMediaStorage( state, ownProps.siteId )
 	};
 } )( MyComponent );
 ```
@@ -60,5 +57,7 @@ export default connect( ( state, ownProps ) => {
 * `sitePlanName`: A plan name ( Free or Premium ) (required)
 * `mediaStorage`: Media Storage limits for a given site.
 * `onClick`: An on click handler that is fired when the plan storage button is clicked.
+* `className`: A string that adds additional class names to this component.
+
 
 
