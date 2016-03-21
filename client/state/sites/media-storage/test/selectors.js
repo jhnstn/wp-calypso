@@ -79,7 +79,7 @@ describe( 'selectors', () => {
 			expect( isOverMediaLimit( state, 2916284 ) ).to.equal( true );
 			expect( isOverMediaLimit( state, 77203074 ) ).to.equal( false );
 		} );
-		it( 'should return false if a site is unlimited or missing', () => {
+		it( 'should return false if a site is unlimited', () => {
 			const state = {
 				sites: {
 					mediaStorage: {
@@ -94,7 +94,21 @@ describe( 'selectors', () => {
 			};
 
 			expect( isOverMediaLimit( state, 2916284 ) ).to.equal( false );
-			expect( isOverMediaLimit( state, 77203074 ) ).to.equal( false );
+		} );
+		it( 'should return null if a media storage is not loaded yet', () => {
+			const state = {
+				sites: {
+					mediaStorage: {
+						items: {
+							2916284: {
+								max_storage_bytes: -1,
+								storage_used_bytes: -1
+							}
+						}
+					}
+				}
+			};
+			expect( isOverMediaLimit( state, 77203074 ) ).to.equal( null );
 		} );
 	} );
 } );

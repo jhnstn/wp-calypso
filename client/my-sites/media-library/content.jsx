@@ -217,7 +217,7 @@ const MediaLibraryContent = React.createClass( {
 export default connect(
 	( state, ownProps ) => {
 		return {
-			overMediaLimit: ownProps.site ? isOverMediaLimit( state, ownProps.site.ID ) : false
+			overMediaLimit: ownProps.site ? isOverMediaLimit( state, ownProps.site.ID ) : null
 		}
 	},
 	null,
