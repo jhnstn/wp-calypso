@@ -46,12 +46,13 @@ export default React.createClass( {
 		if ( ! this.props.mediaStorage || this.props.mediaStorage.max_storage_bytes === -1 ) {
 			return null;
 		}
-		const percent = Math.round( this.props.mediaStorage.storage_used_bytes / this.props.mediaStorage.max_storage_bytes * 1000 ) / 10;
+		const percent = Math.min(
+			Math.round( this.props.mediaStorage.storage_used_bytes / this.props.mediaStorage.max_storage_bytes * 1000 ) / 10,
+			100 );
 		const classes = classNames( this.props.className, 'plan-storage__button', {
 			'is-alert': percent > ALERT_PERCENT,
 			'is-warn': percent > WARN_PERCENT && percent <= ALERT_PERCENT
 		} );
-		const percentString = `${ percent }%`;
 		const max = filesize( this.props.mediaStorage.max_storage_bytes );
 		return (
 			<Button className={ classes } onClick={ this.props.onClick }>
@@ -59,14 +60,14 @@ export default React.createClass( {
 					{ this.getPlanTranslation() }
 				</span>
 				<span className="plan-storage__storage-label" >
-					{ this.translate( '%(percent)s of %(max)s used', {
+					{ this.translate( '%(percent)f%% of %(max)s used', {
 						args: {
-							percent: percentString,
+							percent: percent,
 							max: max
 						}
 					} ) }
 				</span>
-				<ProgressBar className="plan-storage__bar" value={ percent * 10 } total={ 1000 } />
+				<ProgressBar className="plan-storage__bar" value={ percent } total={ 100 } />
 			</Button>
 		);
 	}
