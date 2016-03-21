@@ -44,7 +44,7 @@ export default React.createClass( {
 					<a href="/devdocs/app-components/plan-storage">Plan Storage</a>
 				</h2>
 				<div>
-					<PlanStorage site={ sites.getPrimary() } />
+					<PlanStorage siteId={ sites.getPrimary().ID } />
 				</div>
 				<div>
 					<PlanStorageButton

@@ -11,6 +11,7 @@ import noop from 'lodash/noop';
  */
 import QueryMediaStorage from 'components/data/query-media-storage';
 import { getMediaStorage } from 'state/sites/media-storage/selectors';
+import { getSite } from 'state/sites/selectors';
 import PlanStorageButton from 'components/plan-storage/button';
 
 const PlanStorage = React.createClass( {
@@ -18,7 +19,7 @@ const PlanStorage = React.createClass( {
 	propTypes: {
 		className: React.PropTypes.string,
 		mediaStorage: React.PropTypes.object,
-		site: React.PropTypes.object.isRequired,
+		siteId: React.PropTypes.number.isRequired,
 		onClick: React.PropTypes.func
 	},
 
@@ -29,13 +30,13 @@ const PlanStorage = React.createClass( {
 	},
 
 	render() {
-		if ( ! this.props.site || ! this.props.site.ID || this.props.site.jetpack ) {
+		if ( ! this.props.site || this.props.site.jetpack ) {
 			return null;
 		}
 		const classes = classNames( this.props.className, 'plan-storage' );
 		return (
 			<div className={ classes } >
-				<QueryMediaStorage siteId={ this.props.site.ID } />
+				<QueryMediaStorage siteId={ this.props.siteId } />
 				<PlanStorageButton
 					sitePlanName={ this.props.site.plan.product_name_short }
 					mediaStorage={ this.props.mediaStorage }
@@ -48,6 +49,7 @@ const PlanStorage = React.createClass( {
 
 export default connect( ( state, ownProps ) => {
 	return {
-		mediaStorage: getMediaStorage( state, ownProps.site.ID )
+		mediaStorage: getMediaStorage( state, ownProps.siteId ),
+		site: getSite( state, ownProps.siteId )
 	};
 } )( PlanStorage );

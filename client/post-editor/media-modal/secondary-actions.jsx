@@ -178,7 +178,7 @@ const MediaModalSecondaryActions = React.createClass( {
 				{ this.props.selectedItems.length === 0 &&
 					<PlanStorage
 						onClick={ this.navigateToPlans }
-						site={ this.props.site }/>
+						siteId={ this.props.site.ID }/>
 				}
 			</div>
 		);

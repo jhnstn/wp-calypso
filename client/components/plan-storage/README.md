@@ -8,7 +8,7 @@ will query media storage limits for you.
 
 ```javascript
 	<PlanStorage
-		site={ this.props.site }
+		siteId={ this.props.siteId }
 		onClick={ this.onClickHandler } 
 	/>
 }
@@ -16,7 +16,7 @@ will query media storage limits for you.
 
 #### Props
 
-* `site`: A site (required)
+* `siteId`: A site ID (required)
 * `onClick`: An on click handler that is fired when the plan button is clicked.
 * `className`: A string that adds additional class names to this component.
 
