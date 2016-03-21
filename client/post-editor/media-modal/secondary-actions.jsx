@@ -20,6 +20,7 @@ import PopoverMenuItem from 'components/popover/menu-item';
 import Gridicon from 'components/gridicon';
 import { canUserDeleteItem } from 'lib/media/utils';
 import { getCurrentUser } from 'state/current-user/selectors';
+import { getSiteSlug } from 'state/sites/selectors';
 import PlanStorage from 'components/plan-storage';
 
 const MediaModalSecondaryActions = React.createClass( {
@@ -66,7 +67,7 @@ const MediaModalSecondaryActions = React.createClass( {
 
 	navigateToPlans() {
 		analytics.ga.recordEvent( 'Media', 'Clicked Plan Storage Button' );
-		page( `/plans/${ this.props.site.slug }` );
+		page( `/plans/${ this.props.siteSlug }` );
 	},
 
 	getButtons() {
@@ -184,8 +185,9 @@ const MediaModalSecondaryActions = React.createClass( {
 	}
 } );
 
-export default connect( ( state ) => {
+export default connect( ( state, ownProps ) => {
 	return {
-		user: getCurrentUser( state )
+		user: getCurrentUser( state ),
+		siteSlug: ownProps.site ? getSiteSlug( state, ownProps.site.ID ) : ''
 	};
 } )( MediaModalSecondaryActions );
