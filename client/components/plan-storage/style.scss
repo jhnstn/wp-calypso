@@ -26,8 +26,10 @@
 	background-color: $alert-red;
 }
 
-@include breakpoint( "<480px" ) {
-	.plan-storage__button {
-		display: none;
+.plan-storage__button {
+	display: none;
+
+	@include breakpoint( ">480px" ) {
+		display: inline-block;
 	}
 }
