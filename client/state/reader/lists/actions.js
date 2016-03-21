@@ -32,7 +32,7 @@ export function receiveLists( lists ) {
 /**
  * Triggers a network request to fetch the current user's lists.
  *
- * @return {Function}        Action promise
+ * @return {Function}        Action thunk
  */
 export function requestSubscribedLists() {
 	return ( dispatch ) => {
@@ -83,12 +83,16 @@ export function followList( owner, slug ) {
 				if ( error || ! ( data && data.following ) ) {
 					dispatch( {
 						type: READER_LISTS_FOLLOW_FAILURE,
+						owner,
+						slug,
 						error
 					} );
 					reject();
 				} else {
 					dispatch( {
 						type: READER_LISTS_FOLLOW_SUCCESS,
+						owner,
+						slug,
 						data
 					} );
 					resolve();
