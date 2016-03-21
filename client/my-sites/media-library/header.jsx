@@ -22,7 +22,6 @@ import { userCan } from 'lib/site/utils';
 import { isOverMediaLimit } from 'state/sites/media-storage/selectors';
 
 const MediaLibraryHeader = React.createClass( {
-	displayName: 'MediaLibraryHeader',
 
 	propTypes: {
 		site: PropTypes.object,

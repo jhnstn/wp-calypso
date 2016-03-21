@@ -32,7 +32,6 @@ import { isOverMediaLimit } from 'state/sites/media-storage/selectors';
 const debug = debugFactory( 'calypso:media-library:content' );
 
 const MediaLibraryContent = React.createClass( {
-	displayName: 'MediaLibraryContent',
 
 	propTypes: {
 		site: React.PropTypes.object,
