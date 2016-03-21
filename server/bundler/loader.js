@@ -1,50 +1,121 @@
+"use strict"; // eslint-disable-line
 var config = require( 'config' ),
-	utils = require( './utils' );
+	path = require( 'path' ),
+	utils = require( './utils' ),
+	fs = require( 'fs' ),
+	glob = require( 'glob' );
 
-function getSectionsModule( sections ) {
+function buildSectionModules( sections, sectionDir, loader ) {
 	var dependencies,
 		loadSection = '',
 		sectionLoaders = '';
 
 	if ( config.isEnabled( 'code-splitting' ) ) {
-		dependencies = [
-			"var page = require( 'page' ),",
-			"\tlayoutFocus = require( 'lib/layout-focus' ),",
-			"\tReact = require( 'react' ),",
-			"\tLoadingError = require( 'layout/error' ),",
-			"\tclasses = require( 'component-classes' ),",
-			"\tcontroller = require( 'controller' );",
-			'\n',
-			'var _loadedSections = {};'
-		].join( '\n' );
+		try {
+			fs.mkdirSync( path.join( sectionDir, 'sections' ) );
+		} catch( e ) {
+			//
+		}
+		// cleanup existing files
+		const existingFiles = glob.sync( 'sections/**/*', { cwd: sectionDir } );
+		existingFiles.forEach( function( f ) {
+			fs.unlinkSync( path.join( sectionDir, f ) )
+		} );
+
+		dependencies = new Set();
 
 		sections.forEach( function( section ) {
-			loadSection += singleEnsure( section.name );
-			section.paths.forEach( function( path ) {
-				sectionLoaders += splitTemplate( path, section );
+			const moduleName = 'sections/' + section.name,
+				modulePath = path.join( sectionDir, 'sections', section.name + '.js' );
+			let sectionDependencies = [
+				"var page = require( 'page' ),",
+				"\tlayoutFocus = require( 'lib/layout-focus' ),",
+				"\tReact = require( 'react' ),",
+				"\tLoadingError = require( 'layout/error' ),",
+				"\tclasses = require( 'component-classes' ),",
+				"\tcontroller = require( 'controller' );",
+				'\n',
+				'var _loadedSections = {};'
+			].join( '\n' );
+			sectionLoaders = '';
+			loadSection = singleEnsure( section.name );
+			section.paths.forEach( function( p ) {
+				sectionLoaders += splitTemplate( p, section );
 			} );
+
+			let moduleContent = [
+				sectionDependencies,
+				'module.exports = {',
+				'	get: function() {',
+				'		return ' + JSON.stringify( sections ) + ';',
+				'	},',
+				'	load: function() {',
+				'		' + sectionLoaders,
+				'	},',
+				'	preload: function( section ) {',
+				'		switch ( section ) {',
+				'		' + loadSection,
+				'		}',
+				'	}',
+				'};'
+			].join( '\n' );
+
+
+			fs.appendFileSync( modulePath, moduleContent );
+			loader.addDependency( moduleName );
+			dependencies.add( moduleName );
 		} );
+
+		dependencies = Array.from( dependencies );
+		sectionLoaders = dependencies.map( function( d ) {
+			return 'require( ' + JSON.stringify( d ) + ').load()';
+		} ).join( '\n' );
+
+		loadSection = dependencies.map( function( d ) {
+			return [
+				'case ' + JSON.stringify( d ) + ':',
+				'	 return require.ensure([], function() {}, ' + JSON.stringify( d ) + ' );',
+				' 	break;\n'
+			].join( '\n' );
+		} ).join( '\n' );
+
+		return [
+			'module.exports = {',
+			'	get: function() {',
+			'		return ' + JSON.stringify( sections ) + ';',
+			'	},',
+			'	load: function() {',
+			'		' + sectionLoaders,
+			'	},',
+			'	preload: function( section ) {',
+			'		switch ( section ) {',
+			'		' + loadSection,
+			'		}',
+			'	}',
+			'};'
+		].join( '\n' );
 	} else {
 		dependencies = "var controller = require( 'controller' );\n";
 		sectionLoaders = getRequires( sections );
+		return [
+			dependencies,
+			'module.exports = {',
+			'	get: function() {',
+			'		return ' + JSON.stringify( sections ) + ';',
+			'	},',
+			'	load: function() {',
+			'		' + sectionLoaders,
+			'	},',
+			'	preload: function( section ) {',
+			'		switch ( section ) {',
+			'		' + loadSection,
+			'		}',
+			'	}',
+			'};'
+		].join( '\n' );
 	}
 
-	return [
-		dependencies,
-		'module.exports = {',
-		'	get: function() {',
-		'		return ' + JSON.stringify( sections ) + ';',
-		'	},',
-		'	load: function() {',
-		'		' + sectionLoaders,
-		'	},',
-		'	preload: function( section ) {',
-		'		switch ( section ) {',
-		'		' + loadSection,
-		'		}',
-		'	}',
-		'};'
-	].join( '\n' );
+	throw new Error( 'oh no' );
 }
 
 function getRequires( sections ) {
@@ -74,7 +145,7 @@ function splitTemplate( path, section ) {
 		'		return next();',
 		'	}',
 		'	context.store.dispatch( { type: "SET_SECTION", isLoading: true } );',
-		'	require.ensure([], function( require, error ) {',
+		'	require.ensure([' + JSON.stringify( section.module ) + '], function( r, error ) {',
 		'		if ( error ) {',
 		'			if ( ! LoadingError.isRetry() ) {',
 		'				LoadingError.retry( ' + JSON.stringify( section.name ) + ' );',
@@ -87,7 +158,7 @@ function splitTemplate( path, section ) {
 		'		context.store.dispatch( { type: "SET_SECTION", isLoading: false } );',
 		'		context.store.dispatch( { type: "SET_SECTION", section: ' + JSON.stringify( section ) + ' } );',
 		'		if ( ! _loadedSections[ ' + JSON.stringify( section.module ) + ' ] ) {',
-		'			require( ' + JSON.stringify( section.module ) + ' )( controller.clientRouter );',
+		'			r( ' + JSON.stringify( section.module ) + ' )( controller.clientRouter );',
 		'			_loadedSections[ ' + JSON.stringify( section.module ) + ' ] = true;',
 		'		}',
 		'		layoutFocus.next();',
@@ -127,5 +198,5 @@ module.exports = function( content ) {
 
 	this.addDependency( 'page' );
 
-	return getSectionsModule( sections );
+	return buildSectionModules( sections, path.dirname( this.resourcePath ), this );
 };
