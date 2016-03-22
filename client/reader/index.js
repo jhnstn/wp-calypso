@@ -56,7 +56,7 @@ module.exports = function() {
 
 		// Blog full post
 		page( '/read/post/id/:blog_id/:post_id', controller.legacyRedirects );
-		page( '/read/blogs/:blog/posts/:post', updateLastRoute, controller.blogPost );
+		page( '/read/blogs/:blog/posts/:post', updateLastRoute, controller.sidebar, controller.blogPost );
 		page.exit( '/read/blogs/:blog/posts/:post', controller.resetTitle );
 
 		page( '/tag/*', controller.loadSubscriptions, controller.initAbTests );

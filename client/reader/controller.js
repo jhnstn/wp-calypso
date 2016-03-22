@@ -328,7 +328,9 @@ module.exports = {
 						page.back( context.lastRoute || '/' );
 					},
 					onClosed: removeFullPostDialog,
-					onPostNotFound: renderPostNotFound
+					onPostNotFound: function() {
+						renderPostNotFound( i18n.translate( 'Feed post not found' ) );
+					}
 				} )
 			),
 			document.getElementById( 'tertiary' )
@@ -354,6 +356,13 @@ module.exports = {
 
 		trackPageLoad( basePath, fullPageTitle, 'full_post' );
 
+		// Exit early and render 404 if blogId or postId doesn't match regex.
+		if ( ! context.pathname.match( getFullPostViewRegex() ) ) {
+			renderPostNotFound( i18n.translate( 'Blog post not found' ) );
+
+			return;
+		}
+
 		// this will automatically unmount anything that was already mounted
 		// in #tertiary, so we don't have to check the current state
 		ReactDom.render(
@@ -366,7 +375,10 @@ module.exports = {
 					onClose: function() {
 						page.back( context.lastRoute || '/' );
 					},
-					onClosed: removeFullPostDialog
+					onClosed: removeFullPostDialog,
+					onPostNotFound: function() {
+						renderPostNotFound( i18n.translate( 'Blog post not found' ) );
+					}
 				} )
 			),
 			document.getElementById( 'tertiary' )
