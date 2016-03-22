@@ -30,10 +30,11 @@ module.exports = {
 		defaultVariation: 'originalA'
 	},
 	freeTrials: {
-		datestamp: '20160120',
+		datestamp: '20160322',
 		variations: {
-			notOffered: 90,
-			offered: 10
+			notOffered: 80,
+			addedInSignup: 10,
+			offeredOnThankYouPage: 10
 		},
 		defaultVariation: 'notOffered'
 	},

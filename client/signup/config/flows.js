@@ -2,11 +2,13 @@
  * External dependencies
  */
 import assign from 'lodash/assign';
+import includes from 'lodash/includes';
 import reject from 'lodash/reject';
 
 /**
  * Internal dependencies
  */
+import { abtest } from 'lib/abtest';
 import config from 'config';
 import { getLocaleSlug } from 'lib/i18n-utils';
 import plansPaths from 'my-sites/plans/paths';
@@ -247,6 +249,12 @@ function removeUserStepFromFlow( flow ) {
 }
 
 function filterFlowName( flowName ) {
+	const defaultFlows = [ 'main', 'website' ];
+
+	if ( includes( defaultFlows, flowName ) && abtest( 'freeTrials' ) === 'addedInSignup' ) {
+		return 'free-trial';
+	}
+
 	const locale = getLocaleSlug();
 	// Only allow the `headstart` flow for EN users.
 	if ( 'headstart' === flowName && 'en' !== locale && 'en-gb' !== locale ) {

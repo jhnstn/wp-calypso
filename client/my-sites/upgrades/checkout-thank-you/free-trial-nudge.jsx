@@ -60,7 +60,7 @@ const FreeTrialNudge = React.createClass( {
 	},
 
 	render() {
-		if ( getABTestVariation( 'freeTrials' ) !== 'offered' ) {
+		if ( getABTestVariation( 'freeTrials' ) !== 'offeredOnThankYouPage' ) {
 			return null;
 		}
 
