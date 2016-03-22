@@ -26,7 +26,7 @@ const Card = require( 'components/card' ),
 import { setDate } from 'state/ui/editor/post/actions';
 
 function isPostEmpty( props ) {
-	return ( props.isNew && ! props.isDirty ) || ! props.hasContent;
+	return ( props.isNew && ! props.isDirty ) && ! props.hasContent;
 }
 
 const EditorGroundControl = React.createClass( {

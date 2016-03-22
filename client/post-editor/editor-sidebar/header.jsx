@@ -8,6 +8,7 @@ import { bindActionCreators } from 'redux';
 import get from 'lodash/get';
 import { translate } from 'lib/mixins/i18n';
 import noop from 'lodash/noop';
+import page from 'page';
 
 /**
  * Internal dependencies
@@ -29,13 +30,13 @@ function goBack() {
 	}
 }
 
-function EditorSidebarHeader( { typeSlug, type, siteId, showDrafts, toggleDrafts, allPostsUrl, toggleSidebar, useBackButton } ) {
+function EditorSidebarHeader( { typeSlug, type, siteId, showDrafts, toggleDrafts, allPostsUrl, toggleSidebar } ) {
 	const isCustomPostType = ( 'post' !== typeSlug && 'page' !== typeSlug );
 	const className = classnames( 'editor-sidebar__header', {
 		'is-drafts-visible': showDrafts,
 		'is-loading': isCustomPostType && ! type
 	} );
-
+	const useBackButton = page.len > 0;
 	let closeLabel;
 	if ( useBackButton ) {
 		closeLabel = translate( 'Back' );

@@ -160,8 +160,7 @@ module.exports = {
 					Object.assign( postOptions, {
 						postFormat: 'quote',
 						title: context.query.title,
-						content: pressThisContent,
-						backTo: context.query.backto
+						content: pressThisContent
 					} );
 				}
 
