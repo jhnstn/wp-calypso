@@ -68,6 +68,9 @@ const MediaModalSecondaryActions = React.createClass( {
 
 	navigateToPlans() {
 		analytics.ga.recordEvent( 'Media', 'Clicked Plan Storage Button' );
+		analytics.tracks.recordEvent( 'calypso_upgrade_nudge_cta_click', {
+			cta_name: 'plan-storage'
+		} );
 		page( `/plans/${ this.props.siteSlug }` );
 	},
 
