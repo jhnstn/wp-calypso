@@ -22,7 +22,7 @@ import Theme from 'components/theme/docs/example';
 import Collection from 'devdocs/design/search-collection';
 import HappinessSupport from 'components/happiness-support/docs/example';
 import ThemesListExample from 'components/themes-list/docs/example';
-import PlanStorage from 'components/plan-storage/docs/example';
+import PlanStorage from 'my-sites/plan-storage/docs/example';
 
 export default React.createClass( {
 
