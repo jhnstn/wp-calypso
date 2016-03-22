@@ -67,7 +67,11 @@ export default React.createClass( {
 						}
 					} ) }
 				</span>
-				<ProgressBar className="plan-storage__bar" value={ percent } total={ 100 } />
+				<ProgressBar
+					className="plan-storage__bar"
+					value={ percent }
+					total={ 100 }
+					compact={ true } />
 			</Button>
 		);
 	}
