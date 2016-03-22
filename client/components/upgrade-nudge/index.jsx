@@ -11,6 +11,9 @@ import noop from 'lodash/noop';
 import Button from 'components/button';
 import Gridicon from 'components/gridicon';
 import analytics from 'analytics';
+import sitesList from 'lib/sites-list';
+
+const sites = sitesList();
 
 export default React.createClass( {
 
@@ -21,7 +24,8 @@ export default React.createClass( {
 		className: React.PropTypes.string,
 		message: React.PropTypes.string,
 		icon: React.PropTypes.string,
-		event: React.PropTypes.string
+		event: React.PropTypes.string,
+		href: React.PropTypes.string
 	},
 
 	getDefaultProps() {
@@ -44,8 +48,15 @@ export default React.createClass( {
 
 	render() {
 		const classes = classNames( this.props.className, 'upgrade-nudge' );
+		const site = sites.getSelectedSite();
+		let href = this.props.href;
+
+		if ( ! this.props.href && site ) {
+			href = '/plans/' + site.slug;
+		}
+
 		return (
-			<Button className={ classes } onClick={ this.handleClick }>
+			<Button className={ classes } onClick={ this.handleClick } href={ href }>
 				<div className="upgrade-nudge__info">
 					<span className="upgrade-nudge__title">
 						{ this.translate( 'Upgrade to Premium' ) }
