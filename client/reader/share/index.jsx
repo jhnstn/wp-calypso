@@ -1,5 +1,4 @@
 var React = require( 'react' ),
-	get = require( 'lodash/get' ),
 	url = require( 'url' ),
 	defer = require( 'lodash/defer' ),
 	config = require( 'config' ),
