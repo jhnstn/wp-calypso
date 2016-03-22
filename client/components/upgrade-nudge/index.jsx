@@ -25,7 +25,8 @@ export default React.createClass( {
 		message: React.PropTypes.string,
 		icon: React.PropTypes.string,
 		event: React.PropTypes.string,
-		href: React.PropTypes.string
+		href: React.PropTypes.string,
+		jetpack: React.PropTypes.bool
 	},
 
 	getDefaultProps() {
@@ -33,7 +34,8 @@ export default React.createClass( {
 			onClick: noop,
 			message: 'And get your own domain address.',
 			icon: 'star',
-			event: null
+			event: null,
+			jetpack: false
 		}
 	},
 
@@ -51,6 +53,14 @@ export default React.createClass( {
 		const site = sites.getSelectedSite();
 		let href = this.props.href;
 
+		if ( site && site.plan && site.plan.product_name_short !== 'Free' ) {
+			return null;
+		}
+
+		if ( ! this.props.jetpack && site.jetpack || this.props.jetpack && ! site.jetpack ) {
+			return null;
+		}
+
 		if ( ! this.props.href && site ) {
 			href = '/plans/' + site.slug;
 		}
@@ -59,7 +69,7 @@ export default React.createClass( {
 			<Button className={ classes } onClick={ this.handleClick } href={ href }>
 				<div className="upgrade-nudge__info">
 					<span className="upgrade-nudge__title">
-						{ this.translate( 'Upgrade to Premium' ) }
+						{ this.props.title || this.translate( 'Upgrade to Premium' ) }
 					</span>
 					<span className="upgrade-nudge__message" >
 						{ this.props.message }
