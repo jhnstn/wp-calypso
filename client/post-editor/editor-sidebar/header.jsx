@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import get from 'lodash/get';
 import { translate } from 'lib/mixins/i18n';
+import noop from 'lodash/noop';
 
 /**
  * Internal dependencies
@@ -22,19 +23,32 @@ import DraftsButton from 'post-editor/drafts-button';
 import PostCountsData from 'components/data/post-counts-data';
 import QueryPostTypes from 'components/data/query-post-types';
 
-function EditorSidebarHeader( { typeSlug, type, siteId, showDrafts, toggleDrafts, allPostsUrl, toggleSidebar } ) {
+function goBack() {
+	if ( typeof window !== 'undefined' ) {
+		window.history.back();
+	}
+}
+
+function EditorSidebarHeader( { typeSlug, type, siteId, showDrafts, toggleDrafts, allPostsUrl, toggleSidebar, useBackButton } ) {
 	const isCustomPostType = ( 'post' !== typeSlug && 'page' !== typeSlug );
 	const className = classnames( 'editor-sidebar__header', {
 		'is-drafts-visible': showDrafts,
 		'is-loading': isCustomPostType && ! type
 	} );
 
-	let allPostsLabel;
-	switch ( typeSlug ) {
-		case 'post': allPostsLabel = translate( 'Posts' ); break;
-		case 'page': allPostsLabel = translate( 'Pages' ); break;
-		default: allPostsLabel = get( type, 'labels.menu_name' ) || translate( 'Loading…' );
+	let closeLabel;
+	if ( useBackButton ) {
+		closeLabel = translate( 'Back' );
+	} else {
+		switch ( typeSlug ) {
+			case 'post': closeLabel = translate( 'Posts' ); break;
+			case 'page': closeLabel = translate( 'Pages' ); break;
+			default: closeLabel = get( type, 'labels.menu_name' ) || translate( 'Loading…' );
+		}
 	}
+	const closeButtonAction = useBackButton ? goBack : noop;
+	const closeButtonUrl = useBackButton ? '' : allPostsUrl;
+	const closeButtonAriaLabel = useBackButton ? translate( 'Go back' ) : translate( 'View list of posts' );
 
 	return (
 		<div className={ className }>
@@ -55,10 +69,11 @@ function EditorSidebarHeader( { typeSlug, type, siteId, showDrafts, toggleDrafts
 				<Button
 					compact borderless
 					className="editor-sidebar__close"
-					href={ allPostsUrl }
-					aria-label={ translate( 'View list of posts' ) }>
+					href={ closeButtonUrl }
+					onClick={ closeButtonAction }
+					aria-label={ closeButtonAriaLabel }>
 					<Gridicon icon="arrow-left" size={ 18 } />
-					{ allPostsLabel }
+					{ closeLabel }
 				</Button>
 			) }
 			{ typeSlug === 'post' && siteId && (
@@ -85,7 +100,8 @@ export default connect(
 			siteId,
 			typeSlug,
 			type: getPostType( state, siteId, typeSlug ),
-			showDrafts: isEditorDraftsVisible( state )
+			showDrafts: isEditorDraftsVisible( state ),
+			useBackButton: state
 		};
 	},
 	( dispatch ) => {

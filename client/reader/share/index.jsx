@@ -65,6 +65,7 @@ function buildQuerystringForPost( post ) {
 	args.title = `${ post.title } — ${ post.site_name }`;
 	args.text = post.excerpt;
 	args.url = post.URL;
+	args.backto = window.location.href;
 
 	return qs.stringify( args );
 }
