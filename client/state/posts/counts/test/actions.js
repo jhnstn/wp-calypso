@@ -65,12 +65,12 @@ describe( 'actions', () => {
 					}
 				} )
 				.get( '/wp-json/sites/2916284/wpcom/v2/post-counts/foo' )
-				.reply( 500, {
+				.reply( 404, {
 					body: {
 						code: 'unknown_post_type',
 						message: 'Unknown post type requested'
 					},
-					status: 500,
+					status: 404,
 					headers: {
 						Allow: 'GET'
 					}
