@@ -58,6 +58,7 @@
 		"me/security": true,
 		"me/trophies": false,
 		"muse": true,
+		"my-sites/plan-storage": false,
 		"network-connection": true,
 		"notifications2beta": true,
 		"olark": true,

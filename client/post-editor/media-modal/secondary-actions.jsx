@@ -22,6 +22,7 @@ import { canUserDeleteItem } from 'lib/media/utils';
 import { getCurrentUser } from 'state/current-user/selectors';
 import { getSiteSlug } from 'state/sites/selectors';
 import PlanStorage from 'my-sites/plan-storage';
+import config from 'config';
 
 const MediaModalSecondaryActions = React.createClass( {
 	propTypes: {
@@ -170,16 +171,23 @@ const MediaModalSecondaryActions = React.createClass( {
 		} );
 	},
 
+	renderPlanStorage() {
+		if ( config.isEnabled( 'my-sites/plan-storage' ) && this.props.selectedItems.length === 0 ) {
+			return (
+				<PlanStorage
+					onClick={ this.navigateToPlans }
+					siteId={ this.props.site.ID } />
+			);
+		}
+		return null;
+	},
+
 	render() {
 		return (
 			<div className="editor-media-modal__secondary-actions">
 				{ this.renderMobileButtons() }
 				{ this.renderDesktopButtons() }
-				{ this.props.selectedItems.length === 0 &&
-					<PlanStorage
-						onClick={ this.navigateToPlans }
-						siteId={ this.props.site.ID }/>
-				}
+				{ this.renderPlanStorage() }
 			</div>
 		);
 	}

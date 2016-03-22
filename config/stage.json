@@ -57,6 +57,7 @@
 		"me/security/checkup": true,
 		"me/trophies": false,
 		"muse": true,
+		"my-sites/plan-storage": false,
 		"notifications2beta": true,
 		"olark": true,
 		"olark_use_wpcom_configuration": true,
