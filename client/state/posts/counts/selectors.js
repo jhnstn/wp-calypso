@@ -34,7 +34,7 @@ export function getAllPostCounts( state, siteId, postType ) {
  * @param  {Object} state    Global state tree
  * @param  {Number} siteId   Site ID
  * @param  {String} postType Post type
- * @param  {[type]} status   Post status
+ * @param  {String} status   Post status
  * @return {Number}          Post count
  */
 export function getAllPostCount( state, siteId, postType, status ) {
@@ -60,7 +60,7 @@ export function getMyPostCounts( state, siteId, postType ) {
  * @param  {Object} state    Global state tree
  * @param  {Number} siteId   Site ID
  * @param  {String} postType Post type
- * @param  {[type]} status   Post status
+ * @param  {String} status   Post status
  * @return {Number}          Post count
  */
 export function getMyPostCount( state, siteId, postType, status ) {
