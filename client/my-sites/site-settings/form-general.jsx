@@ -25,6 +25,7 @@ import FormLabel from 'components/forms/form-label';
 import FormRadio from 'components/forms/form-radio';
 import FormCheckbox from 'components/forms/form-checkbox';
 import FormSettingExplanation from 'components/forms/form-setting-explanation';
+import UpgradeNudge from 'components/upgrade-nudge';
 
 module.exports = React.createClass( {
 
@@ -393,6 +394,17 @@ module.exports = React.createClass( {
 						{ this.blogAddress() }
 						{ this.languageOptions() }
 						{ this.holidaySnowOption() }
+						<UpgradeNudge
+							message="And get a domain for free"
+							event="site_settings_domain"
+						/>
+						<UpgradeNudge
+							title="Upgrade to a Jetpack Plan"
+							message="Get automatic site backups and security"
+							event="site_settings_jetpack"
+							icon="cloud"
+							jetpack={ true }
+						/>
 					</form>
 				</Card>
 
