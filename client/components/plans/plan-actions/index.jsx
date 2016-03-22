@@ -18,11 +18,9 @@ var abtest = require( 'lib/abtest' ).abtest,
 	isFreePlan = productsValues.isFreePlan,
 	isBusiness = productsValues.isBusiness,
 	isEnterprise = productsValues.isEnterprise,
-	plansPaths = require( 'my-sites/plans/paths' ),
 	puchasesPaths = require( 'me/purchases/paths' ),
 	refreshSitePlans = require( 'state/sites/plans/actions' ).refreshSitePlans,
-	upgradesActions = require( 'lib/upgrades/actions' ),
-	upgradesNotices = require( 'lib/upgrades/notices' );
+	upgradesActions = require( 'lib/upgrades/actions' );
 
 var PlanActions = React.createClass( {
 	propTypes: { plan: React.PropTypes.object },
@@ -33,7 +31,7 @@ var PlanActions = React.createClass( {
 		}
 
 		if ( this.props.isInSignup ) {
-			return this.shouldOfferFreeTrial() ? this.freeTrialActions() : this.upgradeActions();
+			return this.upgradeActions();
 		}
 
 		if ( ! this.props.sitePlan ) {
@@ -69,7 +67,7 @@ var PlanActions = React.createClass( {
 			return null;
 		}
 
-		return this.shouldOfferFreeTrial() ? this.freeTrialActions() : this.upgradeActions();
+		return this.upgradeActions();
 	},
 
 	freePlanButton: function() {
@@ -159,35 +157,6 @@ var PlanActions = React.createClass( {
 		page( '/checkout/' + this.props.site.slug );
 	},
 
-	handleClickStartTrial: function( event ) {
-		event.preventDefault();
-
-		if ( this.props.isSubmitting ) {
-			return;
-		}
-
-		this.recordStartFreeTrialClick();
-
-		if ( this.props.onSelectPlan ) {
-			return this.props.onSelectPlan( this.getCartItem( { isFreeTrial: true } ) );
-		}
-
-		upgradesNotices.displaySubmitting( { isFreeCart: true } );
-
-		upgradesActions.startFreeTrial( this.props.site.ID, this.props.plan, function( error ) {
-			if ( error ) {
-				upgradesNotices.displayError( error );
-				return;
-			}
-
-			upgradesNotices.clear();
-
-			this.props.refreshSitePlans( this.props.site.ID );
-
-			page( plansPaths.plansDestination( this.props.site.slug, 'thank-you' ) );
-		}.bind( this ) );
-	},
-
 	canSelectPlan: function() {
 		if ( ! config.isEnabled( 'upgrades/checkout' ) ) {
 			return false;
@@ -206,24 +175,6 @@ var PlanActions = React.createClass( {
 		return true;
 	},
 
-	shouldOfferFreeTrial: function() {
-		if ( isFreePlan( this.props.plan ) ) {
-			return false;
-		}
-
-		if ( ! this.props.enableFreeTrials ) {
-			return false;
-		}
-
-		const siteCanOfferTrial = this.props.sitePlan && this.props.sitePlan.canStartTrial;
-
-		if ( ! this.props.isInSignup && ! siteCanOfferTrial ) {
-			return false;
-		}
-
-		return true;
-	},
-
 	getImageButton: function() {
 		const classes = classNames( 'plan-actions__illustration', this.props.plan.product_slug );
 
@@ -233,42 +184,8 @@ var PlanActions = React.createClass( {
 			);
 		}
 
-		if ( this.shouldOfferFreeTrial() ) {
-			return (
-				<div onClick={ this.handleClickStartTrial } className={ classes } />
-			);
-		}
-
 		return (
 			<div onClick={ this.handleSelectPlan } className={ classes } />
-		);
-	},
-
-	freeTrialActions: function() {
-		if ( isFreePlan( this.props.plan ) ) {
-			return this.freePlanButton();
-		}
-
-		return (
-			<div>
-				<button className="button is-primary plan-actions__upgrade-button"
-					disabled={ this.props.isSubmitting }
-					onClick={ this.handleClickStartTrial }>
-						{ this.translate( 'Start Free Trial', { context: 'Store action' } ) }
-				</button>
-
-				<small className="plan-actions__trial-period">
-					{ config.isEnabled( 'upgrades/checkout' )
-						? this.translate( 'Try it free for 14 days, no credit card needed, or {{a}}upgrade now{{/a}}.', {
-							context: 'Store action',
-							components: {
-								a: <a href="#" onClick={ this.handleSelectPlan } />
-							}
-						} )
-						: this.translate( 'Try it free for 14 days, no credit card needed.' )
-					}
-				</small>
-			</div>
 		);
 	},
 
