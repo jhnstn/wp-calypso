@@ -67,9 +67,13 @@ function trackScrollPage( path, title, category, readerView, pageNum ) {
 	} );
 }
 
+function getFullPostViewRegex() {
+	return /^\/read\/(blogs|feeds)\/([0-9]+)\/posts\/([0-9]+)$/i;
+}
+
 // Listen for route changes and remove the full post dialog when we navigate away from it
 pageNotifier( function removeFullPostOnLeave( newContext, oldContext ) {
-	const fullPostViewRegex = /^\/read\/(blogs|feeds)\/([0-9]+)\/posts\/([0-9]+)$/i;
+	const fullPostViewRegex = getFullPostViewRegex();
 
 	if ( ( ! oldContext || oldContext.path.match( fullPostViewRegex ) ) && ! newContext.path.match( fullPostViewRegex ) ) {
 		newContext.store.dispatch( hideReaderFullPost() );
@@ -80,9 +84,11 @@ function removeFullPostDialog() {
 	ReactDom.unmountComponentAtNode( document.getElementById( 'tertiary' ) );
 }
 
-function renderPostNotFound() {
+function renderPostNotFound( pageSidebarTitle ) {
+	setPageTitle( pageSidebarTitle );
+
 	ReactDom.render(
-		<FeedError />,
+		<FeedError sidebarTitle={ pageSidebarTitle } />,
 		document.getElementById( 'primary' )
 	);
 }
@@ -301,6 +307,13 @@ module.exports = {
 		__lastTitle = TitleStore.getState().title;
 
 		trackPageLoad( basePath, fullPageTitle, 'full_post' );
+
+		// Exit early and render 404 if feedId or postId doesn't match regex.
+		if ( ! context.pathname.match( getFullPostViewRegex() ) ) {
+			renderPostNotFound( i18n.translate( 'Feed post not found' ) );
+
+			return;
+		}
 
 		// this will automatically unmount anything that was already mounted
 		// in #tertiary, so we don't have to check the current state of
