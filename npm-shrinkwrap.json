@@ -8565,9 +8565,6 @@
     "blob": {
       "version": "0.0.4"
     },
-    "ms": {
-      "version": "0.7.1"
-    },
     "valid-url": {
       "version": "1.0.9"
     }
