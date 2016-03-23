@@ -25,10 +25,6 @@ const Card = require( 'components/card' ),
 	stats = require( 'lib/posts/stats' );
 import { setDate } from 'state/ui/editor/post/actions';
 
-function isPostEmpty( props ) {
-	return ! props.hasContent || ( ! props.isNew && ! props.isDirty );
-}
-
 const EditorGroundControl = React.createClass( {
 	displayName: 'EditorGroundControl',
 	propTypes: {
@@ -256,8 +252,8 @@ const EditorGroundControl = React.createClass( {
 
 	isPrimaryButtonEnabled: function() {
 		return ! this.props.isPublishing &&
-			! isPostEmpty( this.props ) &&
-			! this.props.isSaveBlocked;
+			! this.props.isSaveBlocked &&
+			this.props.hasContent
 	},
 
 	toggleAdvancedStatus: function() {
