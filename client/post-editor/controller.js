@@ -105,7 +105,18 @@ function getPressThisContent( query ) {
 		pieces.push( ReactDomServer.renderToStaticMarkup( <blockquote>{ text }</blockquote> ) );
 	}
 
-	pieces.push( ReactDomServer.renderToStaticMarkup( <p>via <a href={ url }>{ title }</a>.</p> ) );
+	pieces.push(
+		ReactDomServer.renderToStaticMarkup(
+			<p>
+				{ i18n.translate( 'via {{anchor /}}', {
+					components: {
+						anchor: ( <a href={ url }>{ title }</a> )
+					}
+				} )
+				}
+			</p>
+		)
+	);
 
 	return pieces.join( '\n\n' );
 }

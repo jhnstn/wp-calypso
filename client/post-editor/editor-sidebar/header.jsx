@@ -24,12 +24,6 @@ import DraftsButton from 'post-editor/drafts-button';
 import PostCountsData from 'components/data/post-counts-data';
 import QueryPostTypes from 'components/data/query-post-types';
 
-function goBack() {
-	if ( typeof window !== 'undefined' ) {
-		window.history.back();
-	}
-}
-
 function EditorSidebarHeader( { typeSlug, type, siteId, showDrafts, toggleDrafts, allPostsUrl, toggleSidebar } ) {
 	const isCustomPostType = ( 'post' !== typeSlug && 'page' !== typeSlug );
 	const className = classnames( 'editor-sidebar__header', {
@@ -47,7 +41,7 @@ function EditorSidebarHeader( { typeSlug, type, siteId, showDrafts, toggleDrafts
 			default: closeLabel = get( type, 'labels.menu_name' ) || translate( 'Loading…' );
 		}
 	}
-	const closeButtonAction = useBackButton ? goBack : noop;
+	const closeButtonAction = useBackButton ? page.back : noop;
 	const closeButtonUrl = useBackButton ? '' : allPostsUrl;
 	const closeButtonAriaLabel = useBackButton ? translate( 'Go back' ) : translate( 'View list of posts' );
 
