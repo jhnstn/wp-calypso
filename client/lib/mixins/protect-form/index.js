@@ -13,8 +13,7 @@ var confirmText = i18n.translate( 'You have unsaved changes. Are you sure you wa
 	beforeUnloadText = i18n.translate( 'You have unsaved changes.' ),
 	formsChanged = [];
 
-module.exports =  {
-
+module.exports = {
 	mixin: {
 		componentDidMount: function() {
 			window.addEventListener( 'beforeunload', this.warnIfChanged );
@@ -44,17 +43,17 @@ module.exports =  {
 		}
 	},
 	checkFormHandler: function( context, next ) {
-		if( ! formsChanged.length ) {
+		if ( ! formsChanged.length ) {
 			return next();
 		}
 		debug( 'unsaved form changes detected' );
 		if ( window.confirm( confirmText ) ) { // eslint-disable-line no-alert
 			formsChanged = [];
 			next();
-		} else {
+		} else if ( context.prevPath ) {
 			setTimeout( function() {
-				page.replace( context.prevPath , null, false, false);
-			}, 0);
+				page.replace( context.prevPath, null, false, false );
+			}, 0 );
 		}
 	}
 
