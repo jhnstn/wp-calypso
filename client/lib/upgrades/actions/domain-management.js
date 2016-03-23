@@ -117,7 +117,7 @@ function deleteEmailForwarding( domainName, mailbox, onComplete ) {
 }
 
 function resendVerificationEmailForwarding( domainName, mailbox, onComplete ) {
-	wpcom.resendVerificationEmailForward( domainName, mailbox, ( error ) => {
+	wpcom.resendVerificationEmailForward( domainName, mailbox, ( error, response ) => {
 		if ( ! error ) {
 			Dispatcher.handleServerAction( {
 				type: ActionTypes.EMAIL_FORWARDING_RESEND_VERIFICATION_COMPLETED,
@@ -126,7 +126,7 @@ function resendVerificationEmailForwarding( domainName, mailbox, onComplete ) {
 			} );
 		}
 
-		onComplete( error );
+		onComplete( error, response );
 	} );
 }
 
