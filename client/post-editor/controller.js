@@ -108,11 +108,12 @@ function getPressThisContent( query ) {
 	pieces.push(
 		ReactDomServer.renderToStaticMarkup(
 			<p>
-				{ i18n.translate( 'via {{anchor /}}', {
-					components: {
-						anchor: ( <a href={ url }>{ title }</a> )
-					}
-				} )
+				{
+					i18n.translate( 'via {{anchor/}}', {
+						components: {
+							anchor: ( <a href={ url }>{ title }</a> )
+						}
+					} )
 				}
 			</p>
 		)
