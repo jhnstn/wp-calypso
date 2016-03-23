@@ -29,7 +29,7 @@ const EmailForwardingItem = React.createClass( {
 			this.recordEvent( 'deleteClick', domain, mailbox, forward_address, ! Boolean( error ) );
 
 			if ( error ) {
-				notices.error( error.message );
+				notices.error( error.message || this.translate( 'Failed to delete email forwarding record. Please try again or contact customer support if error persists.' ) );
 			} else {
 				notices.success(
 					this.translate( 'Yay, %(email)s has been successfully deleted!', {
@@ -43,14 +43,39 @@ const EmailForwardingItem = React.createClass( {
 		} );
 	},
 
+	resendVerificationEmail: function() {
+		const { temporary, domain, mailbox, forward_address, email } = this.props.emailData;
+
+		if ( temporary ) {
+			return;
+		}
+
+		upgradesActions.resendVerificationEmailForwarding( domain, mailbox, ( error ) => {
+			this.recordEvent( 'resendVerificationClick', domain, mailbox, forward_address, ! Boolean( error ) );
+
+			if ( error ) {
+				notices.error( error.message || this.translate( 'Failed to resend verification email for email forwarding record. Please try again or contact customer support if error persists.' ) );
+			} else {
+				notices.success(
+					this.translate( 'Yay, successfully sent confirmation email to %(email)s!', {
+						args: {
+							email: email
+						}
+					} ), {
+						duration: 5000
+					} );
+			}
+		} );
+	},
+
 	render: function() {
 		return (
 			<li>
-				<Button borderless onClick={ this.deleteItem }>
+				<Button borderless disabled={ this.props.emailData.temporary } onClick={ this.deleteItem }>
 					<Gridicon icon="trash" />
 				</Button>
 
-				{ ! this.props.emailData.active && <Button borderless onClick={ this.deleteItem } title="Resend Verification Email"><Gridicon icon="mail" /></Button> }
+				{ ! this.props.emailData.active && <Button disabled={ this.props.emailData.temporary } borderless onClick={ this.resendVerificationEmail } title="Resend Verification Email"><Gridicon icon="mail" /></Button> }
 
 				<span>{ this.translate( '{{strong1}}%(email)s{{/strong1}} {{em}}forwards to{{/em}} {{strong2}}%(forwardTo)s{{/strong2}}',
 					{

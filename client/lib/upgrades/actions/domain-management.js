@@ -116,6 +116,20 @@ function deleteEmailForwarding( domainName, mailbox, onComplete ) {
 	} );
 }
 
+function resendVerificationEmailForwarding( domainName, mailbox, onComplete ) {
+	wpcom.resendVerificationEmailForward( domainName, mailbox, ( error ) => {
+		if ( ! error ) {
+			Dispatcher.handleServerAction( {
+				type: ActionTypes.EMAIL_FORWARDING_RESEND_VERIFICATION_COMPLETED,
+				domainName,
+				mailbox
+			} );
+		}
+
+		onComplete( error );
+	} );
+}
+
 function fetchDomains( siteId ) {
 	if ( ! isDomainInitialized( DomainsStore.get(), siteId ) ) {
 		Dispatcher.handleViewAction( {
@@ -540,6 +554,7 @@ export {
 	fetchWhois,
 	requestTransferCode,
 	resendIcannVerification,
+	resendVerificationEmailForwarding,
 	setPrimaryDomain,
 	updateNameservers,
 	updateSiteRedirect,
