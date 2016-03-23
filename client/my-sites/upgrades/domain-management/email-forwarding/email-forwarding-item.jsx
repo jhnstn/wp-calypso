@@ -50,10 +50,10 @@ const EmailForwardingItem = React.createClass( {
 			return;
 		}
 
-		upgradesActions.resendVerificationEmailForwarding( domain, mailbox, ( error ) => {
+		upgradesActions.resendVerificationEmailForwarding( domain, mailbox, ( error, response ) => {
 			this.recordEvent( 'resendVerificationClick', domain, mailbox, forward_address, ! Boolean( error ) );
 
-			if ( error ) {
+			if ( error || ! response.sent ) {
 				notices.error( error.message || this.translate( 'Failed to resend verification email for email forwarding record. Please try again or contact customer support if error persists.' ) );
 			} else {
 				notices.success(
@@ -75,7 +75,7 @@ const EmailForwardingItem = React.createClass( {
 					<Gridicon icon="trash" />
 				</Button>
 
-				{ ! this.props.emailData.active && <Button disabled={ this.props.emailData.temporary } borderless onClick={ this.resendVerificationEmail } title="Resend Verification Email"><Gridicon icon="mail" /></Button> }
+				{ ! this.props.emailData.active && <Button disabled={ this.props.emailData.temporary } borderless onClick={ this.resendVerificationEmail } title={ this.translate( 'Resend Verification Email', { context: 'Email Forwarding' } ) }><Gridicon icon="mail" /></Button> }
 
 				<span>{ this.translate( '{{strong1}}%(email)s{{/strong1}} {{em}}forwards to{{/em}} {{strong2}}%(forwardTo)s{{/strong2}}',
 					{
