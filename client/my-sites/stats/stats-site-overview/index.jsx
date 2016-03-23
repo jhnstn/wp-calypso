@@ -51,7 +51,7 @@ export default React.createClass( {
 		return (
 			<div>
 				<SectionHeader label={ title }>
-					<Button borderless compact href={ headerPath }><Gridicon icon="stats-alt" /></Button>
+					<Button borderless compact href={ headerPath }><Gridicon icon="chevron-right" /></Button>
 				</SectionHeader>
 				<Card key={ site.ID } className="stats__overview stats-module is-site-overview">
 					<StatsTabs borderless>

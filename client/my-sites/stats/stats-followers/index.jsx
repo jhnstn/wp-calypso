@@ -155,7 +155,7 @@ module.exports = React.createClass( {
 		return (
 			<div>
 				<SectionHeader label={ this.translate( 'Followers' ) }>
-					<Button compact borderless href={ summaryPageLink }><Gridicon icon="stats-alt" /></Button>
+					<Button compact borderless href={ summaryPageLink }><Gridicon icon="chevron-right" /></Button>
 				</SectionHeader>
 				<Card className={ classNames.apply( null, classes ) }>
 					<div className="followers">

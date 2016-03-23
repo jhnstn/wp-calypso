@@ -98,7 +98,7 @@ export default React.createClass( {
 								borderless
 								href={ summaryPageLink }
 								>
-								<Gridicon icon="stats-alt" />
+								<Gridicon icon="chevron-right" />
 							</Button> )
 						: ( <DownloadCsv
 								period={ this.props.period }

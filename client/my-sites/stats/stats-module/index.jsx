@@ -71,7 +71,7 @@ export default React.createClass( {
 		if ( ! this.props.summary && this.props.period ) {
 			return (
 				<Button compact borderless onClick={ this.viewAllHandler }>
-					<Gridicon icon="stats-alt" />
+					<Gridicon icon="chevron-right" />
 				</Button>
 			);
 		}

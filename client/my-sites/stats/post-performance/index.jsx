@@ -161,7 +161,7 @@ export default React.createClass( {
 		return (
 			<div>
 				<SectionHeader label={ this.translate( 'Latest Post Summary' ) }>
-					<Button href={ summaryUrl } borderless compact><Gridicon icon="stats-alt" /></Button>
+					<Button href={ summaryUrl } borderless compact><Gridicon icon="chevron-right" /></Button>
 				</SectionHeader>
 
 				<Card className={ cardClass }>
