@@ -82,8 +82,9 @@ const EmailForwardingAddNew = React.createClass( {
 					this.formStateController.resetFields( this.getInitialState().fields );
 
 					notices.success(
-						this.translate( 'Yay, %(email)s has been successfully added!', { args: {
-							email: mailbox + '@' + this.props.selectedDomainName
+						this.translate( 'Yay, %(email)s has been successfully added! You must confirm your email before it starts working. Please check your inbox for %(destination)s.', { args: {
+							email: mailbox + '@' + this.props.selectedDomainName,
+							destination: destination
 						} } ), {
 							duration: 5000
 						} );

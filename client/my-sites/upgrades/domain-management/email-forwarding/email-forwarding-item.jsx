@@ -31,7 +31,14 @@ const EmailForwardingItem = React.createClass( {
 			if ( error ) {
 				notices.error( error.message );
 			} else {
-				this.props.successNotice( this.translate( 'Yay, %(email)s has been successfully deleted!', { args: { email: email } } ) );
+				notices.success(
+					this.translate( 'Yay, %(email)s has been successfully deleted!', {
+						args: {
+							email: email
+						}
+					} ), {
+						duration: 5000
+					} );
 			}
 		} );
 	},
@@ -39,9 +46,12 @@ const EmailForwardingItem = React.createClass( {
 	render: function() {
 		return (
 			<li>
-				<Button borderless disabled={ this.props.emailData.temporary } onClick={ this.deleteItem }>
+				<Button borderless onClick={ this.deleteItem }>
 					<Gridicon icon="trash" />
 				</Button>
+
+				{ ! this.props.emailData.active && <Button borderless onClick={ this.deleteItem } title="Resend Verification Email"><Gridicon icon="mail" /></Button> }
+
 				<span>{ this.translate( '{{strong1}}%(email)s{{/strong1}} {{em}}forwards to{{/em}} {{strong2}}%(forwardTo)s{{/strong2}}',
 					{
 						components: {
