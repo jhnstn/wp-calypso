@@ -72,7 +72,7 @@ export default React.createClass( {
 			} );
 			renewLink = renewLinkPlural;
 		}
-		return <Notice status="is-error" showDismiss={ false }>{ text } { renewLink }</Notice>
+		return <Notice status="is-error" showDismiss={ false } key="expired-domains">{ text } { renewLink }</Notice>
 	},
 
 	expiringDomains() {
@@ -95,7 +95,7 @@ export default React.createClass( {
 			} );
 			renewLink = renewLinkPlural;
 		}
-		return <Notice status="is-error" showDismiss={ false }>{ text } { renewLink }</Notice>;
+		return <Notice status="is-error" showDismiss={ false } key="expiring-domains">{ text } { renewLink }</Notice>;
 	},
 
 	newDomainsWithPrimary() {
@@ -142,7 +142,7 @@ export default React.createClass( {
 			);
 		}
 
-		return <Notice status="is-warning" showDismiss={ false }>{ text }</Notice>;
+		return <Notice status="is-warning" showDismiss={ false } key="new-domains-with-primary">{ text }</Notice>;
 	},
 
 	newDomains() {
@@ -172,7 +172,7 @@ export default React.createClass( {
 				}
 			);
 		}
-		return <Notice status="is-warning" showDismiss={ false }>{ text }</Notice>;
+		return <Notice status="is-warning" showDismiss={ false } key="new-domains">{ text }</Notice>;
 	},
 
 	unverifiedDomains() {
@@ -202,7 +202,7 @@ export default React.createClass( {
 			return null;
 		}
 
-		return <Notice status="is-error" showDismiss={ true } className="domain-warnings__unverified-domains" >{ notice }</Notice>;
+		return <Notice status="is-error" showDismiss={ true } className="domain-warnings__unverified-domains" key="unverified-domains">{ notice }</Notice>;
 	},
 
 	componentWillMount: function() {
